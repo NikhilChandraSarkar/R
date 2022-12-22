@@ -1,0 +1,182 @@
+---
+title: "The Comprehenssive R Learning Pathway"
+author: "Dr Nikhil Chandra Sarkar, Founder of Data Simulation Research Lab"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Let's check the current working directory on your computer
+
+```{r}
+getwd()
+
+```
+# Remove all the memory from workspace in R Environment
+
+```{r}
+rm(list = ls())
+
+```
+
+
+# Install a package
+
+```{r}
+#install.packages('tidyverse')
+
+```
+
+# Load installed library
+
+```{r}
+library(tidyverse)  # For data cleaning and tidy
+
+```
+
+
+# Load other installed libraries
+
+```{r}
+library(data.table)     # For data frame
+library(lubridate)      # For date and time data
+library(ggplot2)        # For visualisation
+
+```
+
+## Let's get strated with a datset from a package (ggplot2)
+
+ggplot2::mpg is a Fuel economy data from 1999 to 2008 for 38 popular models of cars.
+
+```{r}
+data <- mpg
+data %>% head(10)
+
+```
+
+## Get quick data summary
+
+```{r}
+data %>%
+  summary()
+
+```
+
+## Most basic opertions often used in data transformation: 
+
+To learn the five key dplyr functions that allow you to solve the vast majority of your data manipulation challenges:
+
+1. Pick observations by their values: filter()
+2. Reorder the rows: arrange()
+3. Pick variables by their names: select()
+4. Create new variables with functions of existing variables: mutate()
+5. Collapse many values down to a single summary: summarise()
+
+## Use filter function
+
+```{r}
+library(dplyr)
+# Filter the mpg data for model "a4" or "malibu"
+
+filter(data, model =="a4" )
+
+filter(data, model =='a4' | model  =='malibu')
+
+# Alternative for above operation
+data %>% filter(model=="a4" | model =="malibu")
+
+```
+
+## Use summarise function
+
+```{r}
+# descripitve statics: 
+data %>% filter( model=="a4" | model =="malibu" ) %>% 
+  group_by(model) %>% 
+  summarise (Count=n())
+
+```
+
+## Use arrange function
+
+```{r}
+# Rearrange mpg data based on year in decendening order of year
+arrange(data, +year) 
+
+# Rearrange mpg data based on year in accending order of year
+arrange(data, -year)
+
+```
+
+## Use select function
+
+```{r}
+# Select different variables from the dataset
+select(data, year, model, displ, trans)
+
+# Alternative way using
+
+data %>% select(year, model, displ, trans)
+
+```
+
+
+## Generate new variable using existing variables by mutate()
+
+```{r}
+# Generate new variables for the mpg data set
+mutate(data,  differance  =  cty - hwy)
+
+# Aletrnative way
+data %>% mutate(differance  =  cty-hwy)
+
+```
+## Use summarise
+
+```{r}
+# Generate summary statistics for a varible
+summarise(data, count =n(), mean(cty),sd(cty),min(cty), max(cty))
+
+# Aletrnative way
+
+data %>% summarise(count =n(), mean(cty),sd(cty),min(cty), max(cty))
+
+# Descriptive statistics
+data %>% group_by(displ) %>% summarise(count =n())
+data %>% group_by(displ) %>% summarise(count =n(), mean(displ), sd(displ), min(displ), max(displ))
+
+```
+
+## Visualisation
+
+```{r}
+library(ggplot2)
+ggplot() +
+  layer(
+    data = diamonds, mapping = aes(x = carat, y = price),
+geom = "point", stat = "identity", position = "identity" ) +
+  scale_y_continuous() +
+  scale_x_continuous() +
+  coord_cartesian()
+
+```
+## Visualisation
+
+```{r}
+
+  library(ggplot2)
+  ggplot() +
+  layer(
+  data = mpg, mapping = aes(x = displ, y = cty),
+  geom = "point", stat = "identity", position = "identity" ) +
+  scale_y_continuous() +
+  scale_x_continuous() +
+  coord_cartesian() +
+  xlab("Engine displacement (litres)") +
+  ylab("City miles per gallon")
+```
